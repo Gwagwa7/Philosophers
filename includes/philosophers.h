@@ -11,6 +11,8 @@
 
 # include <pthread.h>
 
+typedef pthread_mutex_t t_mutex;
+
 typedef enum	e_state
 {
 	THINK, REST, EAT
@@ -18,8 +20,8 @@ typedef enum	e_state
 
 typedef enum	e_hungry
 {
-	VERY, MID, LOW
-}		t_hungry;
+	HIGH, MID, LOW
+}		        t_hungry;
 
 typedef struct	s_philosophers
 {
@@ -27,6 +29,8 @@ typedef struct	s_philosophers
 	int		    life;
 	t_hungry	hungry_lvl;
     pthread_t   thread;
-}		t_philosophers;
+    int         stick_left;
+    int         stick_right;
+}		        t_philosophers;
 
 #endif

@@ -28,7 +28,7 @@ LIB_COMP 	=	-L ./$(LIBDIR) -lft
 
 CC 		=	gcc
 
-FLAG 		=	-I $(INCDIR) -g
+FLAG 		=	-I $(INCDIR) -g -lpthread -D_GNU_SOURCE
 
 RED = \033[33;31m
 BLUE = \033[33;34m
@@ -43,12 +43,12 @@ $(LIB):
 		@$(MAKE) -C $(LIBDIR)
 
 $(NAME): $(LIB) $(OBJ)
-		@$(CC) -o $(NAME) $(FLAG) $^ $(LIB_COMP)
+		@$(CC) -o $(NAME) $^ $(FLAG) $(LIB_COMP)
 		@rm -f $(DEP).gch
 		@echo "[$(GREEN)Compilation $(BLUE)$(NAME) $(GREEN)ok$(RESET)]"
 
 %.o: %.c
-		@$(CC) -c -o $@ $(FLAG) $^
+		@$(CC) -c -o $@ $^ $(FLAG)
 
 clean:
 	@cd $(LIBDIR) && $(MAKE) $@
