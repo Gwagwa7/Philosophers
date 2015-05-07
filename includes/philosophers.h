@@ -2,12 +2,12 @@
 # define PHILOSOPHERS_H
 
 # define MAX_LIFE 10
-# define EAT_T 10
-# define REST_T 10
-# define THINK_T 10
+# define EAT_T 1
+# define REST_T 2
+# define THINK_T 3
 # define TIMEOUT 100
 # define WIN_MESSAGE "Now, it's time... To DAAAAAAAANCE!!!"
-# define NB_PHILO 7
+# define NB_PHILO 3
 
 # include <pthread.h>
 
@@ -27,6 +27,7 @@ typedef struct	s_philosophers
 {
 	t_state		state;
 	int		    life;
+	int			nb;
 	t_hungry	hungry_lvl;
     pthread_t   thread;
     int         stick_left;
