@@ -15,7 +15,7 @@ typedef pthread_mutex_t t_mutex;
 
 typedef enum	e_state
 {
-	THINK, REST, EAT
+	THINK, REST, EAT, WANT_EAT
 }		t_state;
 
 typedef enum	e_hungry

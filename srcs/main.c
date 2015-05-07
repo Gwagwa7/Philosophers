@@ -12,9 +12,9 @@ void    drop_stick(int n)
     pthread_mutex_unlock(&(sticks[n]));
 }
 
-int     take_stick(int n)
+void     take_stick(int n)
 {
-    return (1);
+    pthread_mutex_lock(&(sticks[n]));
 }
 
 void    update_hungry(t_philosophers *philo)
@@ -28,6 +28,27 @@ void    update_hungry(t_philosophers *philo)
         philo->hungry_lvl = MID;
     else
         philo->hungry_lvl = LOW;
+}
+
+void    eat(int n1)
+{
+    int n2;
+    time_t  t1;
+    time_t  t2;
+
+    printf("Philosopher %d start eating. Life %d\n", n1, philosophers[n1].life);
+    n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
+    philosophers[n1].state = EAT;
+    time(&t1);
+    time(&t2);
+    while (t2 - t1 < EAT_T)
+    {
+        time(&t2);
+        usleep(100000);
+    }
+    philosophers[n1].life = MAX_LIFE * 1000;
+    update_hungry(&(philosophers[n1]));
+    printf("Philosopher %d stop eating. Life %d\n", n1, philosophers[n1].life);
 }
 
 void    rest(int n1)
@@ -61,6 +82,16 @@ void    rest(int n1)
     printf("Philosopher %d stop resting. Life %d\n", n1, philosophers[n1].life);
 }
 
+void    think(int n1)
+{
+    int n2;
+    time_t  t1;
+    time_t  t2;
+
+    printf("Philosopher %d start thinking. Life %d\n", n1, philosophers[n1].life);
+    n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
+}
+
 int     no_philo_dead(void)
 {
     int    i;
@@ -75,11 +106,49 @@ int     no_philo_dead(void)
     return (1);
 }
 
+int     check_sticks(int n1)
+{
+    int right;
+    int left;
+    int nb_stick;
+
+    right = (n1 == NB_PHILO) ? 0 : n1 + 1;
+    left = (n1 == 0) ? NB_PHILO : n1 - 1;
+    nb_stick = 0;
+    if (!philosophers[n1].stick_left && !philosophers[left].stick_right)
+    {
+        take_stick(n1);
+        philosophers[n1].stick_left = 1;
+        philosophers[left].stick_right = 0;
+        nb_stick++;
+    }
+    else if (philosophers[n1].stick_left)
+        nb_stick++;
+    if (!philosophers[n1].stick_right && !philosophers[right].stick_left)
+    {
+        take_stick(right);
+        philosophers[n1].stick_right = 1;
+        philosophers[right].stick_left = 0;
+        nb_stick++;
+    }
+    else if (philosophers[n1].stick_right)
+        nb_stick++;
+    return (nb_stick);
+}
+
 void    *rootine(void *param)
 {
+    int *i;
+    int ret;
+
+    i = (int *)param;
     while (no_philo_dead())
     {
-
+        rest(*i);
+        if ((ret = check_sticks(*i)) == 1)
+            think(*i);
+        else if (ret == 2)
+            eat(*i);
     }
 }
 
