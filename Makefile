@@ -28,7 +28,7 @@ LIB_COMP 	=	-L ./$(LIBDIR) -lft
 
 CC 		=	gcc
 
-FLAG 		=	-I $(INCDIR) -g
+FLAG 		=	-I $(INCDIR) -g -lpthread
 
 RED = \033[33;31m
 BLUE = \033[33;34m

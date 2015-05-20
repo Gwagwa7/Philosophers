@@ -14,7 +14,7 @@ void    drop_stick(int n)
 
 void     take_stick(int n)
 {
-	pthread_mutex_lock(&(sticks[n]));
+	while (pthread_mutex_trylock(&(sticks[n]))) ;
 }
 
 void    update_hungry(t_philosophers *philo)
@@ -36,7 +36,7 @@ void    eat(int n1)
 	time_t  t1;
 	time_t  t2;
 
-	printf("Philosopher %d start eating. Life %d\n", n1, philosophers[n1].life);
+//	printf("Philosopher %d start eating. Life %d\n", n1, philosophers[n1].life);
 	n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
 	philosophers[n1].state = EAT;
 	time(&t1);
@@ -48,7 +48,7 @@ void    eat(int n1)
 	}
 	philosophers[n1].life = MAX_LIFE;
 	update_hungry(&(philosophers[n1]));
-	printf("Philosopher %d stop eating. Life %d\n", n1, philosophers[n1].life);
+//	printf("Philosopher %d stop eating. Life %d\n", n1, philosophers[n1].life);
 }
 
 void    rest(int n1)
@@ -57,7 +57,7 @@ void    rest(int n1)
 	time_t  t1;
 	time_t  t2;
 
-	printf("Philosopher %d start resting. Life %d\n", n1, philosophers[n1].life);
+//	printf("Philosopher %d start resting. Life %d\n", philosophers[n1].nb, philosophers[n1].life);
 	n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
 	if (philosophers[n1].stick_left)
 	{
@@ -79,7 +79,7 @@ void    rest(int n1)
 	}
 	philosophers[n1].life -= REST_T;
 	update_hungry(&(philosophers[n1]));
-	printf("Philosopher %d stop resting. Life %d\n", n1, philosophers[n1].life);
+//	printf("Philosopher %d stop resting. Life %d\n", n1, philosophers[n1].life);
 }
 
 int		neigbhor_is_hungry(int n)
@@ -95,7 +95,7 @@ void    think(int n1)
 	time_t  t1;
 	time_t  t2;
 
-	printf("Philosopher %d start thinking. Life %d\n", n1, philosophers[n1].life);
+//	printf("Philosopher %d start thinking. Life %d\n", n1, philosophers[n1].life);
 	n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
 	time(&t1);
 	time(&t2);
@@ -117,7 +117,7 @@ void    think(int n1)
 	}
 	philosophers[n1].life -= REST_T;
 	update_hungry(&(philosophers[n1]));
-	printf("Philosopher %d stop thinking. Life %d\n", n1, philosophers[n1].life);
+//	printf("Philosopher %d stop thinking. Life %d\n", n1, philosophers[n1].life);
 }
 
 int     no_philo_dead(void)
@@ -189,7 +189,7 @@ int    init_philo(void)
 	int i;
 
 	i = 0;
-	while (i < NB_PHILO)
+	while (1)
 	{
 		philosophers[i].nb = i;
 		philosophers[i].life = MAX_LIFE;
@@ -198,7 +198,9 @@ int    init_philo(void)
 		philosophers[i].stick_right = 0;
 		philosophers[i].stick_left = 0;
 		pthread_create(&(philosophers[i].thread), NULL, rootine, &philosophers[i].nb);
-		sleep(1);
+        if (i == NB_PHILO - 1)
+            break ;
+        usleep(100000);
 		i++;
 	}
 	return (1);
@@ -222,6 +224,31 @@ void	join_philo(void)
 		pthread_join(philosophers[i++].thread, NULL);
 }
 
+void    *draw_gui(void *param)
+{
+    int    i;
+    (void)param;
+
+    while (42)
+    {
+        i = 0;
+        while (i < NB_PHILO)
+        {
+            printf("Philo %d; his life %d; stick_left %d; stick_right %d\n", philosophers[i].nb, philosophers[i].life, philosophers[i].stick_left, philosophers[i].stick_right);
+            i++;
+        }
+        sleep(1);
+    }
+}
+
+void    join_gui(void)
+{
+    pthread_t   gui_thread;
+
+	pthread_create(&gui_thread, NULL, draw_gui, NULL);
+    pthread_join(gui_thread, NULL);
+}
+
 int	main(void)
 {
 	init_stick();
@@ -230,6 +257,7 @@ int	main(void)
 	{
 		printf("Init philo done\n");
 		join_philo();
+        join_gui();
 	}
 	return (0);
 }
