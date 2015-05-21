@@ -36,19 +36,26 @@ void    eat(int n1)
 	time_t  t1;
 	time_t  t2;
 
-//	printf("Philosopher %d start eating. Life %d\n", n1, philosophers[n1].life);
+	printf("Philosopher %d start eating. Life %d\n", n1, philosophers[n1].life);
 	n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
 	philosophers[n1].state = EAT;
+    if (philosophers[n1].stick_left == 0)
+        take_stick(n1);
+    if (philosophers[n1].stick_right == 0)
+        take_stick(n2);
 	time(&t1);
 	time(&t2);
 	while (t2 - t1 < EAT_T)
 	{
 		time(&t2);
-		usleep(100);
 	}
+    if (philosophers[n1].stick_left == 1)
+        drop_stick(n1);
+    if (philosophers[n1].stick_right == 1)
+        drop_stick(n2);
 	philosophers[n1].life = MAX_LIFE;
 	update_hungry(&(philosophers[n1]));
-//	printf("Philosopher %d stop eating. Life %d\n", n1, philosophers[n1].life);
+	printf("Philosopher %d stop eating. Life %d\n", n1, philosophers[n1].life);
 }
 
 void    rest(int n1)
@@ -57,7 +64,7 @@ void    rest(int n1)
 	time_t  t1;
 	time_t  t2;
 
-//	printf("Philosopher %d start resting. Life %d\n", philosophers[n1].nb, philosophers[n1].life);
+	printf("Philosopher %d start resting. Life %d\n", philosophers[n1].nb, philosophers[n1].life);
 	n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
 	if (philosophers[n1].stick_left)
 	{
@@ -75,11 +82,11 @@ void    rest(int n1)
 	while (t2 - t1 < REST_T)
 	{
 		time(&t2);
-		usleep(100);
 	}
+    printf("%d\n", t2 - t1);
 	philosophers[n1].life -= REST_T;
 	update_hungry(&(philosophers[n1]));
-//	printf("Philosopher %d stop resting. Life %d\n", n1, philosophers[n1].life);
+	printf("Philosopher %d stop resting. Life %d\n", n1, philosophers[n1].life);
 }
 
 int		neigbhor_is_hungry(int n)
@@ -95,7 +102,7 @@ void    think(int n1)
 	time_t  t1;
 	time_t  t2;
 
-//	printf("Philosopher %d start thinking. Life %d\n", n1, philosophers[n1].life);
+	printf("Philosopher %d start thinking. Life %d\n", n1, philosophers[n1].life);
 	n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
 	time(&t1);
 	time(&t2);
@@ -111,13 +118,11 @@ void    think(int n1)
 			drop_stick(n2);
 			philosophers[n2].stick_right = 0;
 		}
-		time(&t1);
 		time(&t2);
-		usleep(100);
 	}
 	philosophers[n1].life -= REST_T;
 	update_hungry(&(philosophers[n1]));
-//	printf("Philosopher %d stop thinking. Life %d\n", n1, philosophers[n1].life);
+	printf("Philosopher %d stop thinking. Life %d\n", n1, philosophers[n1].life);
 }
 
 int     no_philo_dead(void)
@@ -166,20 +171,20 @@ int     check_sticks(int n1)
 
 void    *rootine(void *param)
 {
-	int *i;
 	int	j;
 	int ret;
 
-	i = (int *)param;
-	j = *i;
+	j = *(int *)param;
+    printf("I + %d\n", j);
 	while (no_philo_dead())
 	{
-		rest(*i);
+        printf("Philo %d; his life %d; stick_left %d; stick_right %d\n", philosophers[j].nb, philosophers[j].life, philosophers[j].stick_left, philosophers[j].stick_right);
+		rest(j);
+        usleep(10);
 		if ((ret = check_sticks(j)) == 1)
 			think(j);
 		else if (ret == 2)
 			eat(j);
-		usleep(100);
 	}
 	return (NULL);
 }
@@ -197,10 +202,10 @@ int    init_philo(void)
 		philosophers[i].state = REST;
 		philosophers[i].stick_right = 0;
 		philosophers[i].stick_left = 0;
-		pthread_create(&(philosophers[i].thread), NULL, rootine, &philosophers[i].nb);
+		pthread_create(&(philosophers[i].thread), NULL, &rootine, &i);
+        printf("Philo %d; his life %d; stick_left %d; stick_right %d\n", philosophers[i].nb, philosophers[i].life, philosophers[i].stick_left, philosophers[i].stick_right);
         if (i == NB_PHILO - 1)
             break ;
-        usleep(100000);
 		i++;
 	}
 	return (1);
@@ -212,7 +217,9 @@ void	init_stick(void)
 
 	i = 0;
 	while (i < NB_PHILO)
+    {
 		pthread_mutex_init(&(sticks[i++]), NULL);
+    }
 }
 
 void	join_philo(void)
@@ -221,7 +228,9 @@ void	join_philo(void)
 
 	i = 0;
 	while (i < NB_PHILO)
+    {
 		pthread_join(philosophers[i++].thread, NULL);
+    }
 }
 
 void    *draw_gui(void *param)
@@ -237,7 +246,6 @@ void    *draw_gui(void *param)
             printf("Philo %d; his life %d; stick_left %d; stick_right %d\n", philosophers[i].nb, philosophers[i].life, philosophers[i].stick_left, philosophers[i].stick_right);
             i++;
         }
-        sleep(1);
     }
 }
 

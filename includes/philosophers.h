@@ -1,7 +1,7 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# define MAX_LIFE 10
+# define MAX_LIFE 5
 # define EAT_T 1
 # define REST_T 2
 # define THINK_T 3
