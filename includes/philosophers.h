@@ -10,7 +10,8 @@
 # define NB_PHILO 7
 
 
-# define PHILO "\x1B[3%dmPhilo %d: his life %d; stick_left %d; stick_right %d\x1B[0m\n"
+# define PHILO "\x1B[3%dmPhilo %d: his state: %s, his life %d; stick_left %d; stick_right %d\x1B[0m\n"
+
 # define DEAD "\x1B[3%dmPhilo %d: !!starving to death!!\x1B[0m\n"
 # define RESTB "\x1B[3%dmPhilo %d: start resting. Life %d\x1B[0m\n"
 # define RESTE "\x1B[3%dmPhilo %d: stop resting. Life %d\x1B[0m\n"
