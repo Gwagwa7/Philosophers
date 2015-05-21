@@ -1,13 +1,13 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# define MAX_LIFE 5
+# define MAX_LIFE 25
 # define EAT_T 1
 # define REST_T 2
 # define THINK_T 3
 # define TIMEOUT 100
 # define WIN_MESSAGE "Now, it's time... To DAAAAAAAANCE!!!"
-# define NB_PHILO 3
+# define NB_PHILO 7
 
 
 # define PHILO "\x1B[3%dmPhilo %d: his life %d; stick_left %d; stick_right %d\x1B[0m\n"
@@ -37,7 +37,7 @@ typedef enum	e_state
 
 typedef enum	e_hungry
 {
-	HIGH, MID, LOW
+	HIGH = 0, MID = 1, LOW = 2
 }		        t_hungry;
 
 typedef struct	s_philosophers

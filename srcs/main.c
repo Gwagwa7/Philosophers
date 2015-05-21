@@ -19,9 +19,11 @@ void     take_stick(int n)
 
 void    update_hungry(t_philosophers *philo)
 {
-	int life_percent;
+	float	diff_life;
+	int 	life_percent;
 
-	life_percent = philo->life / MAX_LIFE * 100;
+	diff_life = (float)philo->life / (float)MAX_LIFE;
+	life_percent = diff_life * 100;
 	if (life_percent <= 33)
 		philo->hungry_lvl = HIGH;
 	else if (life_percent <= 66)
@@ -40,7 +42,6 @@ void	join_philo(void)
 	while (i < NB_PHILO)
     {
 		ret = pthread_join(philosophers[i].thread, NULL);
-    	printf("Join philo [%d]ret[%d]: %d\n", i, ret, (int)philosophers[i].thread);
     	i++;
     }
 }
@@ -71,6 +72,7 @@ void    eat(int n1)
 	while (t2 - t1 < EAT_T)
 	{
 		time(&t2);
+		usleep(100);
 	}
     if (philosophers[n1].stick_left == 1)
         drop_stick(n1);
@@ -109,16 +111,16 @@ void    rest(int n1)
 	while (t2 - t1 < REST_T)
 	{
 		time(&t2);
+		usleep(100);
 	}
-    printf("time: %ld\n", t2 - t1);
 	philosophers[n1].life -= REST_T;
 	update_hungry(&(philosophers[n1]));
 	printf(RESTE,n1+1, n1, philosophers[n1].life);
 }
 
-int		neigbhor_is_hungry(int n)
+int		neigbhor_is_hungry(int n1, int n2)
 {
-	if (philosophers[n].hungry_lvl == HIGH)
+	if (philosophers[n1].hungry_lvl <= philosophers[n2].hungry_lvl)
 		return (1);
 	return (0);
 }
@@ -135,47 +137,44 @@ void    think(int n1)
 	time(&t2);
 	while (t2 - t1 < REST_T)
 	{
-		if (neigbhor_is_hungry(n1) && philosophers[n1].stick_left)
+		if (neigbhor_is_hungry(n2, n1) && philosophers[n1].stick_left)
 		{
 			drop_stick(n1);
 			printf("think> ");
 			printf(DROPL, n1+1, n1);
 			philosophers[n1].stick_left = 0;
 		}
-		if (neigbhor_is_hungry(n2) && philosophers[n2].stick_right)
+		if (neigbhor_is_hungry(n2, n1) && philosophers[n1].stick_right)
 		{
 			drop_stick(n2);
 			printf("think> ");
 			printf(DROPR, n1+1, n1);
-			philosophers[n2].stick_right = 0;
+			philosophers[n1].stick_right = 0;
 		}
 		time(&t2);
+		usleep(100);
 	}
 	philosophers[n1].life -= REST_T;
 	update_hungry(&(philosophers[n1]));
 	printf(THINKE, n1+1, n1, philosophers[n1].life);
 }
 
-int     no_philo_dead(int i)
+int     no_philo_dead()
 {
-	// int    i;
-	// i = 0;
-	// while (i < NB_PHILO)
-	// {
-	// 	printf("dead> Philo [%d] life: %d\n", i, philosophers[i].life);
-	// 	if (philosophers[i].life < 1)
-	// 	{
-	// 		// join_philo();
-	// 		return (0);
-	// 	}
-	// 	i++;
-	// }
+	 int    i;
+	 i = 0;
+	 while (i < NB_PHILO)
+	 {
+		 if (philosophers[i].life < 1)
+			 return (0);
+		 i++;
+	 }
 	
-	if (philosophers[i].life < 1)
-	{
-		printf(DEAD, i+1, i);
-		return (0);
-	}
+	/*if (philosophers[i].life < 1)*/
+	/*{*/
+		/*printf(DEAD, i+1, i);*/
+		/*return (0);*/
+	/*}*/
 	return (1);
 }
 
@@ -213,23 +212,35 @@ int     check_sticks(int n1)
 	return (nb_stick);
 }
 
+void	*main_rootine(void *param)
+{
+	int	i;
+	
+	(void)param;
+	i = 0;
+	while (no_philo_dead())
+	{
+		usleep(100);
+	}
+	return (NULL);
+}
+
 void    *rootine(void *param)
 {
 	int	j;
 	int ret;
 
 	j = *(int *)param;
-	if (no_philo_dead(j))
+	while (1)
 	{
 		printf("root> ");
         printf(PHILO, j+1, philosophers[j].nb, philosophers[j].life, philosophers[j].stick_left, philosophers[j].stick_right);
 		rest(j);
-        sleep(2);
 		if ((ret = check_sticks(j)) == 1)
 			think(j);
 		else if (ret == 2)
 			eat(j);
-        rootine(&j);
+        usleep(100);
 	}
 	return (NULL);
 }
@@ -244,11 +255,12 @@ int    init_philo(void)
 		philosophers[i].nb = i;
 		philosophers[i].life = MAX_LIFE;
 		philosophers[i].hungry_lvl = LOW;
+		printf("Hungry lvl = %d\n", philosophers[i].hungry_lvl);
 		philosophers[i].state = REST;
 		philosophers[i].stick_right = 0;
 		philosophers[i].stick_left = 0;
-		usleep(1000);
 		pthread_create(&(philosophers[i].thread), NULL, &rootine, &i);
+		usleep(1000);
 		printf("init> ");
         printf(PHILO ,i+1, philosophers[i].nb, philosophers[i].life, philosophers[i].stick_left, philosophers[i].stick_right);
         if (i == NB_PHILO - 1)
@@ -288,6 +300,8 @@ void    *draw_gui(void *param)
     }
 }
 
+
+
 void    join_gui(void)
 {
     pthread_t   gui_thread;
@@ -298,13 +312,13 @@ void    join_gui(void)
 
 int	main(void)
 {
+	pthread_t	main_thread;
 	init_stick();
 	printf("Init stick done\n");
 	if (init_philo() == 1)
 	{
-		printf("Init philo done\n");
-		join_philo();
-        // join_gui();
+		pthread_create(&main_thread, NULL, main_rootine, NULL);
+		pthread_join(main_thread, NULL);
 	}
 	return (0);
 }
