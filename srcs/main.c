@@ -55,9 +55,17 @@ void    eat(int n1)
 	n2 = (n1 == NB_PHILO) ? 0 : n1 + 1;
 	philosophers[n1].state = EAT;
     if (philosophers[n1].stick_left == 0)
+    {
         take_stick(n1);
+        printf("eat> ");
+        printf(TAKEL, n1+1, n1);
+    }
     if (philosophers[n1].stick_right == 0)
+    {
         take_stick(n2);
+        printf("eat> ");
+        printf(TAKER, n1+1, n1);
+    }
 	time(&t1);
 	time(&t2);
 	while (t2 - t1 < EAT_T)
@@ -183,6 +191,8 @@ int     check_sticks(int n1)
 	if (!philosophers[n1].stick_left && !philosophers[left].stick_right)
 	{
 		take_stick(n1);
+		printf("root/check> ");
+		printf(TAKEL, n1+1, n1);
 		philosophers[n1].stick_left = 1;
 		philosophers[left].stick_right = 0;
 		nb_stick++;
@@ -192,6 +202,8 @@ int     check_sticks(int n1)
 	if (!philosophers[n1].stick_right && !philosophers[right].stick_left)
 	{
 		take_stick(right);
+		printf("root/check> ");
+		printf(TAKER, n1+1, n1);
 		philosophers[n1].stick_right = 1;
 		philosophers[right].stick_left = 0;
 		nb_stick++;
@@ -249,11 +261,14 @@ int    init_philo(void)
 void	init_stick(void)
 {
 	int	i;
+	int ret;
 
 	i = 0;
 	while (i < NB_PHILO)
     {
-		pthread_mutex_init(&(sticks[i++]), NULL);
+		ret = pthread_mutex_init(&(sticks[i++]), NULL);
+		if (ret == 0)
+			printf("Mutex successful init for philo %d\n", i);
     }
 }
 

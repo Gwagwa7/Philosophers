@@ -20,6 +20,10 @@
 # define EATE "\x1B[3%dmPhilo %d: stop eating. Life %d\x1B[0m\n"
 # define DROPL "\x1B[3%dmPhilo %d: drop left stick\x1B[0m\n"
 # define DROPR "\x1B[3%dmPhilo %d: drop right stick\x1B[0m\n"
+# define TAKEL "\x1B[3%dmPhilo %d: take left stick\x1B[0m\n"
+# define TAKER "\x1B[3%dmPhilo %d: take right stick\x1B[0m\n"
+
+
 
 # include "libft.h"
 # include <pthread.h>
