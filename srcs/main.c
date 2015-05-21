@@ -58,12 +58,14 @@ void    eat(int n1)
     if (philosophers[n1].stick_left == 0)
     {
         take_stick(n1);
+        philosophers[n1].stick_left = 1;
         // printf("eat> ");
         // printf(TAKEL, n1+1, n1);
     }
     if (philosophers[n1].stick_right == 0)
     {
         take_stick(n2);
+        philosophers[n1].stick_right = 1;
         // printf("eat> ");
         // printf(TAKER, n1+1, n1);
     }
@@ -216,6 +218,9 @@ void	*main_rootine(void *param)
 {
 	int	i;
 	char *state;
+	char *stickL;
+	char *stickR;
+	char *life;
 	
 	(void)param;
 	i = 0;
@@ -225,14 +230,24 @@ void	*main_rootine(void *param)
 		while(i < NB_PHILO)
 		{
 			if(philosophers[i].state == 0)
-				state = "Thinking";
+				state = "\x1B[33mThinking\x1B[0m";
 			else if (philosophers[i].state == 1)
-				state = "Resting";
+				state = "\x1B[35mResting\x1B[0m";
 			else if (philosophers[i].state == 2)
-				state = "Eating";
+				state = "\x1B[36mEating\x1B[0m";
 			else
-				state = "Starving";
-			printf(PHILO, i+1, i, state, philosophers[i].life, philosophers[i].stick_left, philosophers[i].stick_right);
+				state = "\x1B[31mStarving\x1B[0m";
+			if (philosophers[i].stick_left == 1)
+				stickL = "\x1B[32m1\x1B[0m";
+			else
+				stickL = "\x1B[33m0\x1B[0m";
+			if (philosophers[i].stick_right == 1)
+				stickR = "\x1B[32m1\x1B[0m";
+			else
+				stickR = "\x1B[33m0\x1B[0m";
+			life = ft_strjoin("\x1B[32m", ft_itoa(philosophers[i].life));
+			life = 	ft_strjoin(life, "\x1B[0m");
+			printf(PHILO, i, state, life, stickL, stickR);
 			i++;
 		}
 		i = 0;
