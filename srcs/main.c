@@ -183,8 +183,8 @@ int     check_sticks(int n1)
 	int left;
 	int nb_stick;
 
-	right = (n1 == NB_PHILO) ? 0 : n1 + 1;
-	left = (n1 == 0) ? NB_PHILO : n1 - 1;
+	right = (n1 == NB_PHILO - 1) ? 0 : n1 + 1;
+	left = (n1 == 0) ? NB_PHILO - 1 : n1 - 1;
 	nb_stick = 0;
 	if (!philosophers[n1].stick_left && !philosophers[left].stick_right)
 	{
@@ -231,7 +231,6 @@ void	*main_rootine(void *param)
 	time(&t2);
 	while (no_philo_dead() && (t2 - t1 <= TIMEOUT))
 	{
-		printf("******************\n");
 		while(i < NB_PHILO)
 		{
 			if(philosophers[i].state == 0)
@@ -242,6 +241,9 @@ void	*main_rootine(void *param)
 				state = "\x1B[36mEating\x1B[0m";
 			else
 				state = "\x1B[31mStarving\x1B[0m";
+			if (philosophers[i].hungry_lvl == 3)
+				state = "\x1B[31mStarving\x1B[0m"; 
+
 			if (philosophers[i].stick_left == 1)
 				stickL = "\x1B[32m1\x1B[0m";
 			else
@@ -255,10 +257,12 @@ void	*main_rootine(void *param)
 			printf(PHILO, i, state, life, stickL, stickR);
 			i++;
 		}
+		printf("******************\n");
 		i = 0;
 		usleep(1000);
 		time(&t2);
 	}
+	ft_putendl(WIN_MESSAGE);
 	return (NULL);
 }
 
@@ -280,7 +284,7 @@ void    *rootine(void *param)
 		else
 			rest(j);
 		ret = check_sticks(j);
-		printf("Philo %d Ret = %d\n", j, ret);
+		// printf("Philo %d Ret = %d status = %d\n", 6, ret, philosophers[6].state, );
 		if (ret == 1)
 			think(j);
 		else if (ret == 2)

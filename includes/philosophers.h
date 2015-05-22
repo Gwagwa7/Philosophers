@@ -5,7 +5,7 @@
 # define EAT_T 1
 # define REST_T 3
 # define THINK_T 5
-# define TIMEOUT 100
+# define TIMEOUT 40
 # define WIN_MESSAGE "Now, it's time... To DAAAAAAAANCE!!!"
 # define NB_PHILO 7 
 
