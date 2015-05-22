@@ -6,7 +6,7 @@
 #    By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/20 14:58:09 by mcassagn          #+#    #+#              #
-#    Updated: 2015/05/21 12:18:39 by mcassagn         ###   ########.fr        #
+#    Updated: 2015/05/22 11:44:28 by mcassagn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,12 @@ SRC		=	srcs/
 
 INCDIR 		=	includes/
 
-SOURCE		=	$(SRC)main.c 
+SOURCE		=	$(SRC)main.c		\
+				$(SRC)action.c		\
+				$(SRC)hungry.c		\
+				$(SRC)philo.c		\
+				$(SRC)rootines.c	\
+				$(SRC)sticks.c
 
 OBJ		=	$(SOURCE:.c=.o)
 

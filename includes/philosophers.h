@@ -1,16 +1,29 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
+/*   Updated: 2015/05/22 17:56:36 by mcassagn         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# define MAX_LIFE 25
+# define MAX_LIFE 10
 # define EAT_T 1
-# define REST_T 3
-# define THINK_T 5
-# define TIMEOUT 40
+# define REST_T 1
+# define THINK_T 1
+# define TIMEOUT 60
 # define WIN_MESSAGE "Now, it's time... To DAAAAAAAANCE!!!"
-# define NB_PHILO 7 
+# define NB_PHILO 7
+# define RIGHT(X) (X == NB_PHILO - 1) ? 0 : X + 1
+# define LEFT(X) (X == 0) ? NB_PHILO - 1 : X - 1
 
-
-# define PHILO "Philo %d: his state: %s, his life %s; stick_left %s; stick_right %s\n"
+# define PHILO "Philo %d: his state: %s, his life %s; stick_left %s; stick_right %s; hungry_lvl %s\n"
 
 # define DEAD "\x1B[3%dmPhilo %d: !!starving to death!!\x1B[0m\n"
 # define RESTB "\x1B[3%dmPhilo %d: start resting. Life %d\x1B[0m\n"
@@ -24,32 +37,48 @@
 # define TAKEL "\x1B[3%dmPhilo %d: take left stick\x1B[0m\n"
 # define TAKER "\x1B[3%dmPhilo %d: take right stick\x1B[0m\n"
 
-
-
 # include "libft.h"
 # include <pthread.h>
 
-typedef pthread_mutex_t t_mutex;
+typedef pthread_mutex_t	t_mutex;
 
 typedef enum	e_state
 {
 	THINK, REST, EAT, WANT_EAT
-}		t_state;
+}				t_state;
 
 typedef enum	e_hungry
 {
-	HIGH = 0, MID = 1, LOW = 2, CRITICAL
-}		        t_hungry;
+	HIGH = 0, MID, LOW, CRITICAL
+}				t_hungry;
 
 typedef struct	s_philosophers
 {
 	t_state		state;
-	int		    life;
+	int			life;
 	int			nb;
 	t_hungry	hungry_lvl;
-    pthread_t   thread;
-    int         stick_left;
-    int         stick_right;
-}		        t_philosophers;
+	pthread_t	thread;
+	int			stick_left;
+	int			stick_right;
+}				t_philosophers;
 
+t_philosophers	g_philosophers[NB_PHILO];
+t_mutex			g_sticks[NB_PHILO];
+
+void			eat(int philo);
+void			think(int philo);
+void			rest(int philo);
+void			update_hungry(t_philosophers *philo);
+int				neighbor_is_hungry(int neighbor, int me);
+void			join_philo(void);
+int				no_philo_dead(void);
+void			init_stick(void);
+void			*main_rootine(void *param);
+void			*philo_rootine(void *param);
+void			drop_stick(int stick);
+void			take_stick(int stick);
+int				init_sticks(void);
+int				init_philo(void);
+int				check_sticks(int philo);
 #endif
