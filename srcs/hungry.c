@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:33:24 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/25 14:44:47 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 18:04:57 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ void	update_hungry(t_philosophers *philo)
 	int			turns_left;
 
 	turns_left = philo->life / LOSE_PER_TURN;
-	if (turns_left <= 4)
+	if (turns_left <= 1)
 		philo->hungry_lvl = CRITICAL;
-	else if (turns_left <= 5)
+	else if (turns_left <= 2)
 		philo->hungry_lvl = HIGH;
-	else if (turns_left <= 6)
+	else if (turns_left <= 3)
 		philo->hungry_lvl = MEDIUM;
 	else
 		philo->hungry_lvl = LOW;
@@ -30,7 +30,9 @@ void	update_hungry(t_philosophers *philo)
 
 int		neighbor_is_hungry(t_philosophers *neighbor, t_philosophers *me)
 {
-	if (me->life > neighbor->life)
+	if (neighbor->hungry_lvl == CRITICAL)
+		return (1);
+	if (me->life >= neighbor->life)
 		return (1);
 	return (0);
 }

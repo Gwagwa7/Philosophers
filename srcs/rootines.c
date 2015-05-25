@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 11:04:12 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/25 15:02:43 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 18:18:45 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ int		can_steal(int stick, t_philosophers *victim, t_philosophers *me)
 		stick_used = &victim->stick_right;
 	if (!*stick_used)
 		return (1);
-	if (!neighbor_is_hungry(victim, me) || victim->state == THINK)
+	if (victim->state == THINK)
 		return (1);
 	return (0);
 }
@@ -116,35 +116,21 @@ void	*philo_rootine(void *param)
 	philo = &(g_philosophers[j]);
 	left_philo = &(g_philosophers[LEFT(j)]);
 	right_philo = &(g_philosophers[RIGHT(j)]);
-	flag = 0;
 	while (1)
 	{
-		nb_sticks = philo->stick_left + philo->stick_right;;
-		if (flag)
-		{
-		if (!philo->stick_right && !right_philo->stick_left && take_stick(RIGHT(j), philo))
-		{
-			nb_sticks++;
-			if (!philo->stick_left && !left_philo->stick_right && take_stick(j, philo) && !neighbor_is_hungry(left_philo, philo))
-				nb_sticks++;
-		}
-		else if (!philo->stick_left && !right_philo->stick_left && take_stick(j, philo))
-			nb_sticks++;
-		if (nb_sticks == 2)
-			eat(j);
-		else if (nb_sticks == 1)
-			think(j);
-		if (philo->stick_left)
-			drop_stick(j, philo);
-		if (philo->stick_right)
-			drop_stick(RIGHT(j), philo);
-		rest(j);
-		}
-		else
-		{
-			think(j);
-			flag = 1;
-		}
+		if (!philo->stick_left && !left_philo->stick_right)
+			take_stick(j, philo);
+		else if (!philo->stick_left && can_steal(j, left_philo, philo))
+			steal_stick(j, left_philo, philo);
+		if (!philo->stick_right && !right_philo->stick_left)
+			take_stick(RIGHT(j), philo);
+		else if (!philo->stick_right && can_steal(RIGHT(j), right_philo, philo))
+			steal_stick(RIGHT(j), right_philo, philo);
+		if (philo->stick_left == 1 && philo->stick_right == 1)
+			eat(philo);
+		else if (philo->stick_left || philo->stick_right)
+			think(philo);
+		rest(philo);
 		usleep(100);
 	}
 	return (NULL);

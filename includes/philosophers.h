@@ -6,14 +6,14 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/25 13:49:12 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 17:55:00 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# define MAX_LIFE 10
+# define MAX_LIFE 7
 # define EAT_T 1
 # define REST_T 1
 # define THINK_T 1
@@ -67,9 +67,9 @@ typedef struct	s_philosophers
 t_philosophers	g_philosophers[NB_PHILO];
 t_mutex			g_sticks[NB_PHILO];
 
-void			eat(int philo);
-void			think(int philo);
-void			rest(int philo);
+void			eat(t_philosophers *philo);
+void			think(t_philosophers *philo);
+void			rest(t_philosophers *philo);
 void			update_hungry(t_philosophers *philo);
 int				neighbor_is_hungry(t_philosophers *neighbor, t_philosophers *me);
 int				neighbors_is_hungry(t_philosophers *n1, t_philosophers *n2, t_philosophers *me);

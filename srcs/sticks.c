@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:20:50 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/25 14:52:06 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 17:00:25 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,8 @@ int		drop_stick(int stick, t_philosophers *philo)
 		stick_used = &philo->stick_right;
 	if (!*stick_used)
 		return (1);
-	if (!(pthread_mutex_unlock(&(g_sticks[stick]))))
-	{
 		*stick_used = 0;
-		return (1);
-	}
+	pthread_mutex_unlock(&(g_sticks[stick]));
 	return (0);
 }
 
@@ -42,11 +39,8 @@ int		take_stick(int stick, t_philosophers *philo)
 		stick_used = &philo->stick_right;
 	if (*stick_used)
 		return (1);
-	if (!(pthread_mutex_trylock(&(g_sticks[stick]))))
-	{
 		*stick_used = 1;
-		return (1);
-	}
+	pthread_mutex_trylock(&(g_sticks[stick]));
 	return (0);
 }
 

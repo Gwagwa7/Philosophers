@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 11:11:02 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/22 14:07:34 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 16:53:55 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ int		init_philo(void)
 		g_philosophers[i].nb = i;
 		g_philosophers[i].life = MAX_LIFE;
 		g_philosophers[i].hungry_lvl = LOW;
-		g_philosophers[i].state = THINK;
+		g_philosophers[i].state = REST;
 		g_philosophers[i].stick_right = 0;
-		g_philosophers[i].stick_left = 1;
+		g_philosophers[i].stick_left = 0;
 		pthread_create(&(g_philosophers[i].thread), NULL, &philo_rootine, &i);
 		usleep(1000);
 		i++;
