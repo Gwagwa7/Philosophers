@@ -67,14 +67,12 @@ void    set_sticks(t_philosophers *philo, int i)
 {
     if (i)
     {
-                if (!philo->stick_left)
-                    philo->need_left_stick = 1;
-                if (!philo->stick_right)
-                    philo->need_right_stick = 1;
+        if (!philo->stick_left)
+            philo->need_left_stick = 1;
+        if (!philo->stick_right)
+            philo->need_right_stick = 1;
     }
     else
-    {
-                    philo->need_left_stick = 0;
-                    philo->need_right_stick = 0;
-    }
+        philo->need_left_stick = 0;
+        philo->need_right_stick = 0;
 }

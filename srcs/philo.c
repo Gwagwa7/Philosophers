@@ -13,18 +13,6 @@
 #include <unistd.h>
 #include <philosophers.h>
 
-void	join_philo(void)
-{
-	int	i;
-
-	i = 0;
-	while (i < NB_PHILO)
-	{
-		pthread_join(g_philosophers[i].thread, NULL);
-		i++;
-	}
-}
-
 int		no_philo_dead(void)
 {
 	int	i;

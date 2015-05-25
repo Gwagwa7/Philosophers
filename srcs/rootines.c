@@ -78,18 +78,11 @@ static void    philo_main_rootine(t_philosophers *philo)
     if (philo->state == EAT)
         rest(philo);
     take_sticks(philo);
-    if (philo->hungry_lvl > MEDIUM)
-    {
-        if (philo->stick_left && philo->stick_right)
-            eat(philo);
-        else
-        {
-            set_sticks(philo, 1);
-            think(philo);
-        }
-    }
+    if (philo->stick_left && philo->stick_right)
+        eat(philo);
     else
     {
+        set_sticks(philo, 1);
         if (philo->stick_left && philo->stick_right)
             drop_stick(philo->nb, philo);
         think(philo);
