@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 11:04:12 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/22 18:27:44 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 15:02:43 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ void	*main_rootine(void *param)
 				hungry = "critical";
 			if (g_philosophers[i].hungry_lvl == LOW)
 				hungry = "low";
-			if (g_philosophers[i].hungry_lvl == MID)
-				hungry = "mid";
+			if (g_philosophers[i].hungry_lvl == MEDIUM)
+				hungry = "medium";
 			if (g_philosophers[i].hungry_lvl == HIGH)
 				hungry = "high";
 			life = ft_strjoin("\x1B[32m", ft_itoa(g_philosophers[i].life));
@@ -62,7 +62,7 @@ void	*main_rootine(void *param)
 		}
 		printf("******************\n");
 		i = 0;
-		usleep(1000);
+		usleep(500000);
 		time(&t2);
 	}
 	if (no_philo_dead())
@@ -72,13 +72,34 @@ void	*main_rootine(void *param)
 	return (NULL);
 }
 
-void	steal_stick(int stick)
+int		steal_stick(int stick, t_philosophers *victim, t_philosophers *thief)
 {
-	if (g_philosophers[stick].stick_left && g_philosophers[stick].state == THINK)
-	{
-		g_philosophers[stick].stick_left = 0;
-		pthread_mutex_unlock(&(g_sticks[stick]));
-	}
+	pthread_mutex_unlock(&(g_sticks[stick]));
+	if (victim->nb == stick)
+		victim->stick_left = 0;
+	else
+		victim->stick_right = 0;
+	pthread_mutex_lock(&(g_sticks[stick]));
+	if (victim->nb == stick)
+		thief->stick_right = 1;
+	else
+		thief->stick_left = 1;
+	return (1);
+}
+
+int		can_steal(int stick, t_philosophers *victim, t_philosophers *me)
+{
+	int	*stick_used;
+
+	if (stick == victim->nb)
+		stick_used = &victim->stick_left;
+	else
+		stick_used = &victim->stick_right;
+	if (!*stick_used)
+		return (1);
+	if (!neighbor_is_hungry(victim, me) || victim->state == THINK)
+		return (1);
+	return (0);
 }
 
 void	*philo_rootine(void *param)
@@ -86,27 +107,43 @@ void	*philo_rootine(void *param)
 	int	j;
 	int	ret;
 	int	flag;
+	int	nb_sticks;
+	t_philosophers	*philo;
+	t_philosophers	*left_philo;
+	t_philosophers	*right_philo;
 
 	j = *(int *)param;
+	philo = &(g_philosophers[j]);
+	left_philo = &(g_philosophers[LEFT(j)]);
+	right_philo = &(g_philosophers[RIGHT(j)]);
 	flag = 0;
 	while (1)
 	{
-		if (j % 2 && !flag)
+		nb_sticks = philo->stick_left + philo->stick_right;;
+		if (flag)
+		{
+		if (!philo->stick_right && !right_philo->stick_left && take_stick(RIGHT(j), philo))
+		{
+			nb_sticks++;
+			if (!philo->stick_left && !left_philo->stick_right && take_stick(j, philo) && !neighbor_is_hungry(left_philo, philo))
+				nb_sticks++;
+		}
+		else if (!philo->stick_left && !right_philo->stick_left && take_stick(j, philo))
+			nb_sticks++;
+		if (nb_sticks == 2)
+			eat(j);
+		else if (nb_sticks == 1)
+			think(j);
+		if (philo->stick_left)
+			drop_stick(j, philo);
+		if (philo->stick_right)
+			drop_stick(RIGHT(j), philo);
+		rest(j);
+		}
+		else
 		{
 			think(j);
 			flag = 1;
-		}
-		else
-			rest(j);
-		ret = check_sticks(j);
-		if (ret == 1)
-			think(j);
-		else if (ret == 2 && (!neighbor_is_hungry(LEFT(j), j) || !neighbor_is_hungry(RIGHT(j), j)))
-			eat(j);
-		else
-		{
-			drop_stick(j);
-			g_philosophers[j].stick_left = 0;
 		}
 		usleep(100);
 	}

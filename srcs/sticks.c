@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:20:50 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/22 17:41:59 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 14:52:06 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,43 @@
 #include <philosophers.h>
 #include <stdio.h>
 
-void	drop_stick(int stick)
+int		drop_stick(int stick, t_philosophers *philo)
 {
-	printf("Unlock : %d\n", pthread_mutex_unlock(&(g_sticks[stick])));
+	int	*stick_used;
+
+	if (philo->nb == stick)
+		stick_used = &philo->stick_left;
+	else
+		stick_used = &philo->stick_right;
+	if (!*stick_used)
+		return (1);
+	if (!(pthread_mutex_unlock(&(g_sticks[stick]))))
+	{
+		*stick_used = 0;
+		return (1);
+	}
+	return (0);
 }
 
-void	take_stick(int stick)
+int		take_stick(int stick, t_philosophers *philo)
 {
-	while (pthread_mutex_trylock(&(g_sticks[stick])))
-		;
+	int	*stick_used;
+
+	if (philo->nb == stick)
+		stick_used = &philo->stick_left;
+	else
+		stick_used = &philo->stick_right;
+	if (*stick_used)
+		return (1);
+	if (!(pthread_mutex_trylock(&(g_sticks[stick]))))
+	{
+		*stick_used = 1;
+		return (1);
+	}
+	return (0);
 }
 
-int		check_left_stick(int philo)
+/*int		check_left_stick(int philo)
 {
 	if (!g_philosophers[philo].stick_left)
 	{
@@ -67,7 +92,7 @@ int		check_sticks(int philo)
 	else
 		nb_sticks++;
 	return (nb_sticks);
-}
+}*/
 
 int		init_sticks(void)
 {

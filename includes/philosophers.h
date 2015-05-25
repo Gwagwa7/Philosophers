@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/22 17:56:36 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/25 13:49:12 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # define NB_PHILO 7
 # define RIGHT(X) (X == NB_PHILO - 1) ? 0 : X + 1
 # define LEFT(X) (X == 0) ? NB_PHILO - 1 : X - 1
+# define LOSE_PER_TURN (REST_T + EAT_T)
 
 # define PHILO "Philo %d: his state: %s, his life %s; stick_left %s; stick_right %s; hungry_lvl %s\n"
 
@@ -49,7 +50,7 @@ typedef enum	e_state
 
 typedef enum	e_hungry
 {
-	HIGH = 0, MID, LOW, CRITICAL
+	LOW = 0, MEDIUM, HIGH, CRITICAL
 }				t_hungry;
 
 typedef struct	s_philosophers
@@ -70,14 +71,15 @@ void			eat(int philo);
 void			think(int philo);
 void			rest(int philo);
 void			update_hungry(t_philosophers *philo);
-int				neighbor_is_hungry(int neighbor, int me);
+int				neighbor_is_hungry(t_philosophers *neighbor, t_philosophers *me);
+int				neighbors_is_hungry(t_philosophers *n1, t_philosophers *n2, t_philosophers *me);
 void			join_philo(void);
 int				no_philo_dead(void);
 void			init_stick(void);
 void			*main_rootine(void *param);
 void			*philo_rootine(void *param);
-void			drop_stick(int stick);
-void			take_stick(int stick);
+int			drop_stick(int stick, t_philosophers *philo);
+int			take_stick(int stick, t_philosophers *philo);
 int				init_sticks(void);
 int				init_philo(void);
 int				check_sticks(int philo);
