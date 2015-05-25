@@ -13,7 +13,7 @@
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# define MAX_LIFE 7
+# define MAX_LIFE 5
 # define EAT_T 1
 # define REST_T 1
 # define THINK_T 1
@@ -62,6 +62,8 @@ typedef struct	s_philosophers
 	pthread_t	thread;
 	int			stick_left;
 	int			stick_right;
+	int			need_left_stick;
+	int			need_right_stick;
 }				t_philosophers;
 
 t_philosophers	g_philosophers[NB_PHILO];
@@ -71,15 +73,14 @@ void			eat(t_philosophers *philo);
 void			think(t_philosophers *philo);
 void			rest(t_philosophers *philo);
 void			update_hungry(t_philosophers *philo);
-int				neighbor_is_hungry(t_philosophers *neighbor, t_philosophers *me);
-int				neighbors_is_hungry(t_philosophers *n1, t_philosophers *n2, t_philosophers *me);
-void			join_philo(void);
 int				no_philo_dead(void);
 void			init_stick(void);
 void			*main_rootine(void *param);
 void			*philo_rootine(void *param);
-int			drop_stick(int stick, t_philosophers *philo);
-int			take_stick(int stick, t_philosophers *philo);
+void	    	drop_stick(int stick, t_philosophers *philo);
+void	    	take_stick(int stick, t_philosophers *philo);
+void	    	drop_sticks(t_philosophers *philo);
+void	    	take_sticks(t_philosophers *philo);
 int				init_sticks(void);
 int				init_philo(void);
 int				check_sticks(int philo);

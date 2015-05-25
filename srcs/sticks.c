@@ -12,91 +12,69 @@
 
 #include <pthread.h>
 #include <philosophers.h>
-#include <stdio.h>
 
-int		drop_stick(int stick, t_philosophers *philo)
+void    drop_stick(int stick, t_philosophers *philo)
 {
-	int	*stick_used;
+    int	*stick_used;
 
-	if (philo->nb == stick)
-		stick_used = &philo->stick_left;
-	else
-		stick_used = &philo->stick_right;
-	if (!*stick_used)
-		return (1);
-		*stick_used = 0;
-	pthread_mutex_unlock(&(g_sticks[stick]));
-	return (0);
+    if (philo->nb == stick)
+        stick_used = &philo->stick_left;
+    else
+        stick_used = &philo->stick_right;
+    if (!*stick_used)
+        return ;
+    *stick_used = 0;
+    pthread_mutex_unlock(&(g_sticks[stick]));
 }
 
-int		take_stick(int stick, t_philosophers *philo)
+void    drop_sticks(t_philosophers *philo)
 {
-	int	*stick_used;
-
-	if (philo->nb == stick)
-		stick_used = &philo->stick_left;
-	else
-		stick_used = &philo->stick_right;
-	if (*stick_used)
-		return (1);
-		*stick_used = 1;
-	pthread_mutex_trylock(&(g_sticks[stick]));
-	return (0);
+    drop_stick(philo->nb, philo);
+    drop_stick(RIGHT(philo->nb), philo);
 }
 
-/*int		check_left_stick(int philo)
+void    take_stick(int stick, t_philosophers *philo)
 {
-	if (!g_philosophers[philo].stick_left)
-	{
-		if (g_philosophers[LEFT(philo)].stick_right && g_philosophers[LEFT(philo)].state == THINK)
-		{
-			drop_stick(philo);
-			g_philosophers[LEFT(philo)].stick_right = 0;
-		}
-		if (!g_philosophers[LEFT(philo)].stick_right)
-		{
-			take_stick(philo);
-			g_philosophers[philo].stick_left = 1;
-			return (1);
-		}
-		return (0);
-	}
-	return (1);
+    if (!(pthread_mutex_trylock(&(g_sticks[stick]))))
+    {
+        if (philo->nb == stick)
+            philo->stick_left = 1;
+        else
+            philo->stick_right = 1;
+    }
 }
 
-int		check_sticks(int philo)
+void    take_sticks(t_philosophers *philo)
 {
-	int	nb_sticks;
-
-	nb_sticks = check_left_stick(philo);
-	if (!g_philosophers[philo].stick_right)
-	{
-		if (g_philosophers[RIGHT(philo)].stick_left && g_philosophers[RIGHT(philo)].state == THINK)
-		{
-			drop_stick(RIGHT(philo));
-			g_philosophers[RIGHT(philo)].stick_left = 0;
-		}
-		if (!g_philosophers[RIGHT(philo)].stick_left)
-		{
-			take_stick(RIGHT(philo));
-			g_philosophers[philo].stick_right = 1;
-			nb_sticks++;
-		}
-	}
-	else
-		nb_sticks++;
-	return (nb_sticks);
-}*/
+    take_stick(philo->nb, philo);
+    take_stick(RIGHT(philo->nb), philo);
+}
 
 int		init_sticks(void)
 {
-	int	i;
+    int	i;
 
-	i = 0;
-	while (i < NB_PHILO)
-	{
-		pthread_mutex_init(&(g_sticks[i]), NULL);
-		++i;
-	}
-	return (1);
+    i = 0;
+    while (i < NB_PHILO)
+    {
+        pthread_mutex_init(&(g_sticks[i]), NULL);
+        ++i;
+    }
+    return (1);
+}
+
+void    set_sticks(t_philosophers *philo, int i)
+{
+    if (i)
+    {
+                if (!philo->stick_left)
+                    philo->need_left_stick = 1;
+                if (!philo->stick_right)
+                    philo->need_right_stick = 1;
+    }
+    else
+    {
+                    philo->need_left_stick = 0;
+                    philo->need_right_stick = 0;
+    }
 }

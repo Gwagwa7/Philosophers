@@ -49,9 +49,11 @@ int		init_philo(void)
 		g_philosophers[i].nb = i;
 		g_philosophers[i].life = MAX_LIFE;
 		g_philosophers[i].hungry_lvl = LOW;
-		g_philosophers[i].state = REST;
+		g_philosophers[i].state = THINK;
 		g_philosophers[i].stick_right = 0;
-		g_philosophers[i].stick_left = 0;
+		g_philosophers[i].stick_left = 1;
+		g_philosophers[i].need_right_stick = 0;
+		g_philosophers[i].need_left_stick = 0;
 		pthread_create(&(g_philosophers[i].thread), NULL, &philo_rootine, &i);
 		usleep(1000);
 		i++;
