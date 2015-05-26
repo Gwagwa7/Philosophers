@@ -6,7 +6,7 @@
 /*   By: mcassagn <mcassagn@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/16 15:25:48 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/06 14:40:43 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/26 10:33:53 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,13 @@
 
 # include <string.h>
 
-/*# define INT_MAX 2147483647
-# define INT_MIN -2147483648*/
-
 typedef struct		s_list
 {
 	void			*content;
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
+
 char				*ft_strdup(const char *s1);
 size_t				ft_strlen(const char *s);
 char				*ft_strcpy(char *s1, const char *s2);

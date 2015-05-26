@@ -6,7 +6,7 @@
 /*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/25 17:55:00 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/05/26 10:35:22 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,12 @@ int				no_philo_dead(void);
 void			init_stick(void);
 void			*main_rootine(void *param);
 void			*philo_rootine(void *param);
-void	    	drop_stick(int stick, t_philosophers *philo);
-void	    	take_stick(int stick, t_philosophers *philo);
-void	    	drop_sticks(t_philosophers *philo);
-void	    	take_sticks(t_philosophers *philo);
+void			drop_stick(int stick, t_philosophers *philo);
+void			take_stick(int stick, t_philosophers *philo);
+void			drop_sticks(t_philosophers *philo);
+void			take_sticks(t_philosophers *philo);
 int				init_sticks(void);
 int				init_philo(void);
 int				check_sticks(int philo);
+void			set_sticks(t_philosophers *philo, int i);
 #endif
