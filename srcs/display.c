@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/26 09:41:12 by mschmit           #+#    #+#             */
-/*   Updated: 2015/05/26 14:25:00 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/05/26 16:20:53 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,13 @@
 #include <fcntl.h>
 #include "../includes/philosophers.h"
 #include "../includes/libft.h"
+
+/* 
+   Trouver comment caster le tab de win_philo
+   Passer les x et Y des faces et des sticks dans win_philo
+   ajouter la fonction pour que les win_philo soient en rond
+   et ok !!
+*/
 
 static void finish(int sig)
 {
@@ -102,7 +109,7 @@ void init_graph(WINDOW **graph)
 	
 }
 
-char *get_state(int state)
+char *get_state_info(int state)
 {
 	if (state == 0)
 		return ("THINK");
@@ -117,6 +124,21 @@ char *get_state(int state)
 
 }
 
+char *get_state_face(int state)
+{
+	if (state == 0)
+		return ("../imgs/facethink.txt");
+	else if (state == 1)
+		return ("../imgs/facerest.txt");
+	else if (state == 2)
+		return ("../imgs/faceeat.txt");
+	else if (state == 3)
+		return ("../imgs/facestarve.txt");
+	else
+		return ("ERROR");
+
+}
+/* changer les coordonnees, integrer dns win_philo */
 void draw_face(WINDOW **graph, int maxY, int maxX, char *path)
 {
 	char 	*ret;
@@ -127,33 +149,64 @@ void draw_face(WINDOW **graph, int maxY, int maxX, char *path)
 	fd = open(path, O_RDONLY);
 	if (fd != -1)
 		while (get_next_line(fd, &ret) != 0)
+		{
 			mvwprintw(*graph, (maxX / 2) + ++i, (maxY / 2) - (ft_strlen(ret) / 2), "%s", ret);
+		}
 	close(fd);
 }
+/* changer les coordonnees, integrer dns win_philo */
+void draw_stick(WINDOW **graph, int maxY, int maxX)
+{
+	char 	*ret;
+	int		fd;
+	int 	fd2;
+	int 	i;
+	int 	Lstick;
+	int 	Rstick;
 
-// void draw_table(WINDOW **graph)
-// {
-// 	mvwprintw(*info, offset + i, 12, "ID [");
-// }
+	i = -1;
+	Lstick = 1;
+	Rstick = 1;
+	fd = open("../imgs/Lstick.txt", O_RDONLY);
+	fd2 = open("../imgs/Rstick.txt", O_RDONLY);
+	if (fd != -1)
+		while (get_next_line(fd, &ret) != 0)
+			if(Lstick == 1)
+				mvwprintw(*graph, (maxX / 2) + ++i, (maxY / 2) - (ft_strlen(ret) / 2)+ 20, "%s", ret);
+	i = -1;
+	if (fd2 != -1)
+		while (get_next_line(fd2, &ret) != 0)
+			if(Rstick == 1)
+				mvwprintw(*graph, (maxX / 2) + ++i, (maxY / 2) - (ft_strlen(ret) / 2), "%s", ret);
+	close(fd);
+	close(fd2);
+
+}
 
 void display_graph(WINDOW **graph)
 {
 	int		maxX;
 	int		maxY;
-	
+	int 	i;
+	int 	y;
+	int 	facex;
+	int 	facey;
+
+	i = 0;
+	y = 42;
+	facex = 20;
+	facey = 13;
 	getmaxyx(*graph, maxX, maxY);
 	wborder(*graph, 0, 0, 0, 0, 0, 0, 0, 0);
-	draw_face(graph, maxY, maxX, "../imgs/facerest.txt");
+	while (i < NB_PHILO)
+	{
+		draw_face(graph, y, maxX, get_state_face(i));
+		draw_stick(graph, y, maxX);
+		y+= 45;
+		i++;
+	}
 	wrefresh(*graph);
 	sleep(1);
-	draw_face(graph, maxY, maxX, "../imgs/facesleep.txt");
-	wrefresh(*graph);
-	sleep(1);
-	draw_face(graph, maxY, maxX, "../imgs/facethink.txt");
-	wrefresh(*graph);
-	sleep(1);
-	draw_face(graph, maxY, maxX, "../imgs/facestarve.txt");
-	wrefresh(*graph);
 }
 
 void display_info(WINDOW **info)
@@ -170,7 +223,7 @@ void display_info(WINDOW **info)
 	getmaxyx(*info, maxX, maxY);
 	wborder(*info, 0, 0, 0, 0, 0, 0, 0, 0);
 	mvwprintw(*info, 1, (maxY / 2) - 5, "%s", "PHILOSOPHE");
-	while (i < NB_PHILO + 5)
+	while (i < NB_PHILO)
 	{
 		idlen = ft_strlen(ft_itoa(i + 1));
 		mvwprintw(*info, offset + i, 12, "ID [%d] COLOR [", i + 1);
@@ -178,7 +231,7 @@ void display_info(WINDOW **info)
 		mvwprintw(*info, offset + i, 25 + idlen, " ");
 		wattrset(*info, COLOR_PAIR(0));
 		mvwprintw(*info, offset + i, 26 + idlen, "]");
-		mvwprintw(*info, offset + i + 1, 12, "Status: %s", get_state(i));
+		mvwprintw(*info, offset + i + 1, 12, "Status: %s", get_state_info(i));
 		mvwprintw(*info, offset + i + 2, 12, "Life: ");
 		wattrset(*info, COLOR_PAIR(2));
 		mvwprintw(*info, offset + i + 2, 21, "%d/%d", 22, MAX_LIFE );
@@ -191,18 +244,44 @@ void display_info(WINDOW **info)
 	wrefresh(*info);
 }
 
+/* corriger le cast, renvoyer les bonne coordonnees pour les mettre en cercle */
+void init_philo_win(WINDOW **philo[])
+{
+	int i;
+	int maxX;
+	int maxY;
+	int offset;
+
+	i = -1;
+	offset = 0;
+	getmaxyx(stdscr, maxX, maxY);
+	while(++i < NB_PHILO)
+	{
+		*philo[i] = newwin(14, 20, 10, 10 + offset);
+		ft_putendl("tab");
+		ft_putnbr(i);
+		offset += 20;
+	}
+	
+	
+}
+
 int main(void)
 {
 	int		c;
 	int		num;
 	WINDOW *info;
 	WINDOW *graph;
+	WINDOW *philo[NB_PHILO];
 
 	num = 0;
 	init_display();
 	display_title();
 	init_info(&info);
 	init_graph(&graph);
+
+	init_philo_win((WINDOW ***)philo);
+
 	display_info(&info);
 	display_graph(&graph);
 	sleep(5);
