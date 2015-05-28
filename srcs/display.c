@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/26 09:41:12 by mschmit           #+#    #+#             */
-/*   Updated: 2015/05/27 12:07:05 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/05/28 15:05:52 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+
 #include "../includes/philosophers.h"
 #include "../includes/libft.h"
 
@@ -143,18 +144,21 @@ void draw_table(WINDOW *win)
 	int maxY;
 	int x;
 	int y;
-	float deg;
 
-	deg = 0;
-	getmaxyx(win, maxX, maxY);
-	while (deg < 360.0f)
+	x = 0;
+	y = 0;
+	getmaxyx(win, maxY, maxX);
+	while (y < (maxY - (maxY / 3)))
 	{
-		x = maxX - 2(int)((maxX - 2) * /*[fct cos] */(deg * (180.0f)/ 3.14));
-		y = maxY - 2(int)((maxY - 2) * /* [fct sin] */(deg * (180.0f)/ 3.14));
-
-		mvwaddch(win, y, x, '.');
-		deg += 1.0f
+		while (x < (maxX - (maxX / 3)))
+		{
+			x++;
+			mvwaddch(win, y + maxY/5, x + maxX/5, '.');
+		}
+		x = 0;
+		y++;
 	}
+	wrefresh(win);
 }
 
 void display_info(WINDOW **info)
@@ -192,21 +196,39 @@ void display_info(WINDOW **info)
 	wrefresh(*info);
 }
 
-void init_philo_win(WINDOW ***philo)
+void init_philo_win(WINDOW *philo[], WINDOW *graph)
 {
 	int i;
 	int maxX;
 	int maxY;
-	int offset;
+	int y;
+	int x;
 
+	y = 10;
+	x = 50;
+	getmaxyx(graph, maxY, maxX);
 	i = -1;
-	offset = 0;
-	getmaxyx(stdscr, maxX, maxY);
-	while(++i < NB_PHILO)
+	if(NB_PHILO > 1)
 	{
-		(*philo)[i] = newwin(15, 27, 10, 42 + offset);
-		offset += 27;
-	}
+		while(++i < NB_PHILO)
+		{
+			*(philo + i) = newwin(15, 27, y, x);
+			
+			if (y > maxY + 1000)
+			{
+				x -= 28;
+			}
+			else if (x > maxX)
+			{
+				y+= 16;
+			}
+			else
+			{
+				x += 28;
+			}
+			
+		}
+	}	
 }
 
 void draw_stick(WINDOW *philo, int maxY, int maxX)
@@ -253,22 +275,25 @@ void draw_face(WINDOW *philo, int maxY, int maxX, char *path)
 }
 
 
-void display_philo(WINDOW ***philo)
+void display_philo(WINDOW *philo[])
 {
 	int i;
 	int		maxX;
 	int		maxY;
 	i = -1;
-	getmaxyx((*philo)[0], maxX, maxY);
-	while(++i < NB_PHILO)
+	getmaxyx(*(philo), maxX, maxY);
+	if(NB_PHILO > 1)
 	{
-		wattrset((*philo)[i], COLOR_PAIR(i + 8));
-		wborder((*philo)[i], 0, 0, 0, 0, 0, 0, 0, 0);
-		wattrset((*philo)[i], COLOR_PAIR(0));
-		draw_face((*philo)[i], maxY, maxX, get_state_face(i));
-		draw_stick((*philo)[i], maxY, maxX);
-		wrefresh((*philo)[i]);
+		while(++i < NB_PHILO)
+		{
+			wattrset(*(philo + i), COLOR_PAIR(i + 8));
+			wborder(*(philo + i), 0, 0, 0, 0, 0, 0, 0, 0);
+			wattrset(*(philo + i), COLOR_PAIR(0));
+			draw_face(*(philo + i), maxY, maxX, get_state_face(i));
+			draw_stick(*(philo + i), maxY, maxX);
+			wrefresh(*(philo + i));
 
+		}
 	}
 
 	sleep(1);
@@ -287,12 +312,13 @@ int main(void)
 
 	init_info(&info);
 	initndisplay_graph(&graph);
-	init_philo_win((WINDOW ***)philo);
+	init_philo_win(philo, graph);
 
+	draw_table(graph);
 	display_info(&info);
-	display_philo((WINDOW ***)philo);
+	display_philo(philo);
 	
-	sleep(5);
+	sleep(10);
 	finish(0);
 	return (1);
 }
