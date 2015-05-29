@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/20 14:58:09 by mcassagn          #+#    #+#              #
-#    Updated: 2015/05/22 11:44:28 by mcassagn         ###   ########.fr        #
+#    Updated: 2015/05/29 15:20:25 by mschmit          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,8 @@ SOURCE		=	$(SRC)main.c		\
 				$(SRC)hungry.c		\
 				$(SRC)philo.c		\
 				$(SRC)rootines.c	\
-				$(SRC)sticks.c
+				$(SRC)sticks.c		\
+				$(SRC)display.c
 
 OBJ		=	$(SOURCE:.c=.o)
 
@@ -33,7 +34,7 @@ LIB_COMP 	=	-L ./$(LIBDIR) -lft
 
 CC 		=	gcc
 
-FLAG 		=	-I $(INCDIR) -g -lpthread
+FLAG 		=	-I $(INCDIR) -g -lpthread -lncurses
 
 RED = \033[33;31m
 BLUE = \033[33;34m

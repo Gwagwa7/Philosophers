@@ -6,14 +6,14 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/28 14:00:52 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/05/29 16:33:11 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# define MAX_LIFE 5
+# define MAX_LIFE 10
 # define EAT_T 1
 # define REST_T 1
 # define THINK_T 1
@@ -40,6 +40,7 @@
 
 # include "libft.h"
 # include <pthread.h>
+# include <ncurses.h>
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -84,4 +85,12 @@ void	    	take_sticks(t_philosophers *philo);
 int				init_sticks(void);
 int				init_philo(void);
 int				check_sticks(int philo);
+
+int				init_display(void);
+void 			init_info(WINDOW **info);
+void 			initndisplay_graph(WINDOW **graph);
+void 			init_philo_win(WINDOW *philo[], WINDOW *graph);
+void 			display_info(WINDOW **info);
+void 			display_philo(WINDOW *philo[]);
+void			display_title(void);
 #endif
