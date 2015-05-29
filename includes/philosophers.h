@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/29 16:33:11 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/05/29 16:40:23 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,12 +85,14 @@ void	    	take_sticks(t_philosophers *philo);
 int				init_sticks(void);
 int				init_philo(void);
 int				check_sticks(int philo);
+void			set_sticks(t_philosophers *philo, int i);
 
 int				init_display(void);
 void 			init_info(WINDOW **info);
 void 			initndisplay_graph(WINDOW **graph);
 void 			init_philo_win(WINDOW *philo[], WINDOW *graph);
 void 			display_info(WINDOW **info);
+void			finish(int sig);
 void 			display_philo(WINDOW *philo[]);
 void			display_title(void);
 #endif

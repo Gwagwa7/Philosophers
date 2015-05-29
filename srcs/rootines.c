@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 11:04:12 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/29 16:26:47 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/05/29 16:57:08 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 #include <unistd.h>
 #include <philosophers.h>
 
-void	*main_rootine(void *param)
+void    *main_rootine(void *param)
 {
-    int	i;
+    int i;
     char *state;
     char *stickL;
     char *stickR;
     char *hungry;
     char *life;
-    time_t	t1;
-    time_t	t2;
+    time_t  t1;
+    time_t  t2;
 
     WINDOW *info;
     WINDOW *graph;
@@ -34,17 +34,19 @@ void	*main_rootine(void *param)
     time(&t1);
     time(&t2);
     init_display();    
-    init_info(&info);
-    initndisplay_graph(&graph);
-    init_philo_win(philo, graph);
+    
         
     while (no_philo_dead() && (t2 - t1 <= TIMEOUT))
     {
+        init_info(&info);
+        initndisplay_graph(&graph);
+        init_philo_win(philo, graph);
         display_info(&info);
         display_philo(philo);
-        // usleep(750000);
+        usleep(750000);
         time(&t2);
     }
+    finish(0);
     if (no_philo_dead())
         ft_putendl(WIN_MESSAGE);
     else

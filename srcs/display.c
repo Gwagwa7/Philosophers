@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/26 09:41:12 by mschmit           #+#    #+#             */
-/*   Updated: 2015/05/29 16:32:01 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/05/29 16:55:58 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
   afficher les stick a cote si aucun des philo n'en tiens
 */
 
-static void finish(int sig)
+void finish(int sig)
 {
 	clear();
 	endwin();
@@ -106,7 +106,6 @@ void initndisplay_graph(WINDOW **graph)
 	getmaxyx(stdscr, maxX, maxY);
 	*graph = newwin(maxX, maxY - 41, 0, 41);
 	wborder(*graph, 0, 0, 0, 0, 0, 0, 0, 0);
-	touchwin(*graph);
 	wrefresh(*graph);
 	
 }
@@ -245,12 +244,12 @@ void draw_stick(WINDOW *philo, int maxY, int maxX, int index)
 	wattrset(philo, COLOR_PAIR(3));
 	if (fd != -1)
 		while (get_next_line(fd, &ret) != 0)
-			if(g_philosophers[index].stick_left == 1)
+			if(g_philosophers[index].stick_right == 1)
 				mvwprintw(philo, ++i, maxY - 6, "%s", ret);
 	i = 6;
 	if (fd2 != -1)
 		while (get_next_line(fd2, &ret) != 0)
-			if(g_philosophers[index].stick_right == 1)
+			if(g_philosophers[index].stick_left == 1)
 				mvwprintw(philo, ++i, 1, "%s", ret);
 	close(fd);
 	close(fd2);
@@ -306,6 +305,4 @@ void display_philo(WINDOW *philo[])
 		mvwprintw(*(philo + (NB_PHILO + 1)), 7, 7, "f*cking\n\twormhole");
 		wrefresh(*(philo + (NB_PHILO + 1)));
 	}
-
-	sleep(1);
 }
