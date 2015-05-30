@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   display.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
+/*   By: sho <sho@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/26 09:41:12 by mschmit           #+#    #+#             */
-/*   Updated: 2015/05/29 16:55:58 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/05/30 16:23:55 by sho              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,7 @@
 #include "../includes/philosophers.h"
 #include "../includes/libft.h"
 
-/* 
-  Dessiner la table
-  placer les portrait de philo tout au tour
-  afficher les stick a cote si aucun des philo n'en tiens
-*/
-
-void finish(int sig)
+void	finish(int sig)
 {
 	clear();
 	endwin();
@@ -55,9 +49,8 @@ void	display_title(void)
 	wrefresh(stdscr);
 }	
 
-int init_display(void)
+int		init_display(void)
 {
-
 	initscr();
 	noecho();
 	keypad(stdscr, TRUE);
@@ -82,13 +75,12 @@ int init_display(void)
         init_pair(12, COLOR_BLACK,  COLOR_CYAN);
         init_pair(13, COLOR_BLACK,  COLOR_MAGENTA);
         init_pair(14, COLOR_BLACK,  COLOR_WHITE);
-
 	}
 	display_title();
 	return (0);
 }
 
-void init_info(WINDOW **info)
+void	init_info(WINDOW **info)
 {
 	int		maxX;
 	int		maxY;
@@ -98,7 +90,7 @@ void init_info(WINDOW **info)
 	
 }
 
-void initndisplay_graph(WINDOW **graph)
+void	initndisplay_graph(WINDOW **graph)
 {
 	int		maxX;
 	int		maxY;
@@ -110,7 +102,7 @@ void initndisplay_graph(WINDOW **graph)
 	
 }
 
-char *get_state_info(int state)
+char	*get_state_info(int state)
 {
 	if (state == 0)
 		return ("THINK    ");
@@ -125,7 +117,7 @@ char *get_state_info(int state)
 
 }
 
-char *get_state_face(int state)
+char	*get_state_face(int state)
 {
 	if (state == 0)
 		return ("./imgs/facethink.txt");
@@ -140,7 +132,7 @@ char *get_state_face(int state)
 
 }
 
-void draw_table(WINDOW *win)
+void	draw_table(WINDOW *win)
 {
 	int maxX;
 	int maxY;
@@ -163,14 +155,13 @@ void draw_table(WINDOW *win)
 	wrefresh(win);
 }
 
-void display_info(WINDOW **info)
+void	display_info(WINDOW **info)
 {
 	int		maxX;
 	int		maxY;
 	int		i;
 	int 	idlen;
 	int		offset;
-
 	
 	i = 0;
 	offset = 3;
@@ -179,8 +170,7 @@ void display_info(WINDOW **info)
 	wborder(*info, 0, 0, 0, 0, 0, 0, 0, 0);
 	mvwprintw(*info, 1, (maxY / 2) - 5, "%s", "PHILOSOPHE");
 	while (i < NB_PHILO)
-	{
-		
+	{	
 		idlen = ft_strlen(ft_itoa(i + 1));
 		mvwprintw(*info, offset + i, 12, "ID [%d] COLOR [", i + 1);
 		wattrset(*info, COLOR_PAIR(i + 8));
@@ -200,18 +190,17 @@ void display_info(WINDOW **info)
 	wrefresh(*info);
 }
 
-void init_philo_win(WINDOW *philo[], WINDOW *graph)
+void	init_philo_win(WINDOW *philo[], WINDOW *graph)
 {
 	int		i;
 	int		axis[2];
 	int		maxaxis[2];
-	i = 0;
 
+	i = 0;
 	getmaxyx(graph, maxaxis[0], maxaxis[1]);
 	axis[0] = 1;
 	axis[1] = 43;
 	if(NB_PHILO > 1)
-	{
 		while (i < NB_PHILO + 2)
 		{
 			*(philo + i) = newwin(15, 27, axis[0], axis[1]);
@@ -223,44 +212,36 @@ void init_philo_win(WINDOW *philo[], WINDOW *graph)
 			}
 			i++;
 		}
-
-	}
 }
 
-void draw_stick(WINDOW *philo, int maxY, int maxX, int index)
+void	draw_stick(WINDOW *philo, int maxY, int maxX, int index)
 {
-	char 	*ret;
+	char	*ret;
 	int		fd;
-	int 	fd2;
-	int 	i;
-	int 	Lstick;
-	int 	Rstick;
+	int		i;
 
 	i = 6;
-	Lstick = 1;
-	Rstick = 1;
 	fd = open("./imgs/Lstick.txt", O_RDONLY);
-	fd2 = open("./imgs/Rstick.txt", O_RDONLY);
 	wattrset(philo, COLOR_PAIR(3));
 	if (fd != -1)
 		while (get_next_line(fd, &ret) != 0)
 			if(g_philosophers[index].stick_right == 1)
 				mvwprintw(philo, ++i, maxY - 6, "%s", ret);
 	i = 6;
-	if (fd2 != -1)
-		while (get_next_line(fd2, &ret) != 0)
+	close(fd);
+	fd = open("./imgs/Rstick.txt", O_RDONLY);
+	if (fd != -1)
+		while (get_next_line(fd, &ret) != 0)
 			if(g_philosophers[index].stick_left == 1)
 				mvwprintw(philo, ++i, 1, "%s", ret);
 	close(fd);
-	close(fd2);
-
 }
 
-void draw_face(WINDOW *philo, int maxY, int maxX, char *path)
+void	draw_face(WINDOW *philo, int maxY, int maxX, char *path)
 {
-	char 	*ret;
+	char	*ret;
 	int		fd;
-	int 	i;
+	int		i;
 
 	i = 0;
 	fd = open(path, O_RDONLY);
@@ -270,36 +251,37 @@ void draw_face(WINDOW *philo, int maxY, int maxX, char *path)
 	close(fd);
 }
 
-
-void display_philo(WINDOW *philo[])
+void	display_philo_norme(WINDOW *philo[], int i, int offset)
 {
-	int i;
+	wclear(*(philo + i));
+	wattrset(*(philo + i), COLOR_PAIR(i + offset));
+	wborder(*(philo + i), 0, 0, 0, 0, 0, 0, 0, 0);
+	wattrset(*(philo + i), COLOR_PAIR(0));
+}
+
+void	display_philo(WINDOW *philo[])
+{
+	int		i;
 	int		maxX;
 	int		maxY;
 	int		offset;
 
 	offset = 7;
-	i = 1;
+	i = 0;
 	getmaxyx(*(philo), maxX, maxY);
 	if(NB_PHILO > 1)
 	{
 		wborder(*(philo), 0, 0, 0, 0, 0, 0, 0, 0);
 		mvwprintw(*(philo), 7, 7, "f*cking\n\twormhole");
 		wrefresh(*(philo));
-		while(i < NB_PHILO + 1)
+		while(++i < NB_PHILO + 1)
 		{
 			if ((i + offset) > 14)
 				offset -= 7;
-			wclear(*(philo + i));
-			wattrset(*(philo + i), COLOR_PAIR(i + offset));
-			wborder(*(philo + i), 0, 0, 0, 0, 0, 0, 0, 0);
-			wattrset(*(philo + i), COLOR_PAIR(0));
+			display_philo_norme(philo, i, offset);
 			draw_face(*(philo + i), maxY, maxX, get_state_face(g_philosophers[i-1].state));
 			draw_stick(*(philo + i), maxY, maxX, i-1);
 			wrefresh(*(philo + i));
-			i++;
-			
-
 		}
 		wborder(*(philo + (NB_PHILO + 1)), 0, 0, 0, 0, 0, 0, 0, 0);
 		mvwprintw(*(philo + (NB_PHILO + 1)), 7, 7, "f*cking\n\twormhole");
