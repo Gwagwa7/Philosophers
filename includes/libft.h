@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcassagn <mcassagn@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/01/16 15:25:48 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/06 14:40:43 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/06/01 09:35:09 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 # define LIBFT_H
 
 # include <string.h>
-
-/*# define INT_MAX 2147483647
-# define INT_MIN -2147483648*/
 
 typedef struct		s_list
 {

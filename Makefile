@@ -6,7 +6,7 @@
 #    By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/20 14:58:09 by mcassagn          #+#    #+#              #
-#    Updated: 2015/05/29 15:20:25 by mschmit          ###   ########.fr        #
+#    Updated: 2015/06/01 11:07:09 by mschmit          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,11 @@ SOURCE		=	$(SRC)main.c		\
 				$(SRC)philo.c		\
 				$(SRC)rootines.c	\
 				$(SRC)sticks.c		\
-				$(SRC)display.c
+				$(SRC)drop_stick.c	\
+				$(SRC)display.c		\
+				$(SRC)init_display.c\
+				$(SRC)getndraw.c 	\
+				$(SRC)startnend.c	\
 
 OBJ		=	$(SOURCE:.c=.o)
 
