@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 11:04:12 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/06/01 11:05:38 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/06/01 13:03:46 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void			*main_rootine(void *param)
 	time_t	t2;
 	WINDOW	*info;
 	WINDOW	*graph;
-	WINDOW	*philo[NB_PHILO];
+	WINDOW	*philo[NB_PHILO + 2];
 
 	(void)param;
 	time(&t1);
@@ -34,7 +34,7 @@ void			*main_rootine(void *param)
 		display_philo(philo, 0);
 		time(&t2);
 	}
-	finish(0);
+	finish(philo);
 	if (no_philo_dead())
 		ft_putendl(WIN_MESSAGE);
 	else

@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/06/01 10:47:28 by mschmit           #+#    #+#             */
-/*   Updated: 2015/06/01 11:02:39 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/06/01 12:58:57 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void			init_philo_win(WINDOW *philo[], WINDOW *graph)
 	if (NB_PHILO > 1)
 		while (i < NB_PHILO + 2)
 		{
-			*(philo + i) = newwin(15, 27, axis[0], axis[1]);
+			philo[i] = newwin(15, 27, axis[0], axis[1]);
 			axis[1] += 27;
 			if (axis[1] > maxaxis[1])
 			{

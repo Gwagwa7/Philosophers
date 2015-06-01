@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/06/01 10:50:09 by mschmit           #+#    #+#             */
-/*   Updated: 2015/06/01 10:53:45 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/06/01 11:37:02 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ char			*get_state_face(int state)
 		return ("ERROR");
 }
 
-void			draw_stick(WINDOW *philo, int maxy, int maxx, int index)
+void			draw_stick(WINDOW *philo, int maxy, int index)
 {
 	char	*ret;
 	int		fd;
@@ -63,7 +63,7 @@ void			draw_stick(WINDOW *philo, int maxy, int maxx, int index)
 	close(fd);
 }
 
-void			draw_face(WINDOW *philo, int maxy, int maxx, char *path)
+void			draw_face(WINDOW *philo, int maxy, char *path)
 {
 	char	*ret;
 	int		fd;

@@ -6,15 +6,24 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/06/01 10:54:22 by mschmit           #+#    #+#             */
-/*   Updated: 2015/06/01 11:05:49 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/06/01 12:57:59 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philosophers.h"
+#include <stdlib.h>
 
-void			finish(int sig)
+void			finish(WINDOW *philo[])
 {
+	int	i;
+
+	i = 0;
 	clear();
+	while (i < NB_PHILO + 2)
+	{
+		delwin(philo[i]);
+		i++;
+	}
 	endwin();
 }
 

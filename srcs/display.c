@@ -6,11 +6,11 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/26 09:41:12 by mschmit           #+#    #+#             */
-/*   Updated: 2015/06/01 10:58:49 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/06/01 13:01:52 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philosophers.h"
+#include "philosophers.h"
 
 static void		display_info_norme(WINDOW **info, int i, int offset)
 {
@@ -56,10 +56,10 @@ void			display_info(WINDOW **info)
 
 static void		display_philo_norme(WINDOW *philo[], int i, int offset)
 {
-	wclear(*(philo + i));
-	wattrset(*(philo + i), COLOR_PAIR(i + offset));
-	wborder(*(philo + i), 0, 0, 0, 0, 0, 0, 0, 0);
-	wattrset(*(philo + i), COLOR_PAIR(0));
+	wclear(philo[i]);
+	wattrset(philo[i], COLOR_PAIR(i + offset));
+	wborder(philo[i], 0, 0, 0, 0, 0, 0, 0, 0);
+	wattrset(philo[i], COLOR_PAIR(0));
 }
 
 void			display_philo(WINDOW *philo[], int i)
@@ -80,9 +80,9 @@ void			display_philo(WINDOW *philo[], int i)
 			path = get_state_face(PHI[i - 1].state);
 			((i + offset) > 14) ? offset -= 7 : offset;
 			display_philo_norme(philo, i, offset);
-			draw_face(*(philo + i), max[1], max[0], path);
-			draw_stick(*(philo + i), max[1], max[0], i - 1);
-			wrefresh(*(philo + i));
+			draw_face(philo[i], max[1], path);
+			draw_stick(philo[i], max[1], i - 1);
+			wrefresh(philo[i]);
 		}
 		wborder(*(philo + (NB_PHILO + 1)), 0, 0, 0, 0, 0, 0, 0, 0);
 		mvwprintw(*(philo + (NB_PHILO + 1)), 7, 7, "f*cking\n\twormhole");

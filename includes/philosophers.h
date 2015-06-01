@@ -6,7 +6,7 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/06/01 11:02:28 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/06/01 12:58:38 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,22 +17,21 @@
 # define EAT_T 1
 # define REST_T 1
 # define THINK_T 1
-# define TIMEOUT 60
+# define TIMEOUT 20
 # define WIN_MESSAGE "Now, it's time... To DAAAAAAAANCE!!!"
 # define NB_PHILO 7
 # define RIGHT(X) (X == NB_PHILO - 1) ? 0 : X + 1
 # define LEFT(X) (X == 0) ? NB_PHILO - 1 : X - 1
 # define LOSE_PER_TURN (REST_T + EAT_T)
 # define PHI g_philosophers
-# include "libft.h"
 # include <pthread.h>
-# include <ncurses.h>
 # include <ncurses.h>
 # include <curses.h>
 # include <unistd.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>
+# include "libft.h"
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -84,11 +83,11 @@ void			init_info(WINDOW **info);
 void			initndisplay_graph(WINDOW **graph, WINDOW **info);
 void			init_philo_win(WINDOW *philo[], WINDOW *graph);
 void			display_info(WINDOW **info);
-void			finish(int sig);
+void			finish(WINDOW *philo[]);
 void			display_philo(WINDOW *philo[], int i);
 void			display_title(void);
 char			*get_state_info(int state);
 char			*get_state_face(int state);
-void			draw_stick(WINDOW *philo, int maxy, int maxx, int index);
-void			draw_face(WINDOW *philo, int maxy, int maxx, char *path);
+void			draw_stick(WINDOW *philo, int maxy, int index);
+void			draw_face(WINDOW *philo, int maxy, char *path);
 #endif
