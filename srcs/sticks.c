@@ -3,35 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   sticks.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:20:50 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/26 10:32:59 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/06/10 11:59:07 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <pthread.h>
 #include <philosophers.h>
-
-void	drop_stick(int stick, t_philosophers *philo)
-{
-	int	*stick_used;
-
-	if (philo->nb == stick)
-		stick_used = &philo->stick_left;
-	else
-		stick_used = &philo->stick_right;
-	if (!*stick_used)
-		return ;
-	*stick_used = 0;
-	pthread_mutex_unlock(&(g_sticks[stick]));
-}
-
-void	drop_sticks(t_philosophers *philo)
-{
-	drop_stick(philo->nb, philo);
-	drop_stick(RIGHT(philo->nb), philo);
-}
 
 void	take_stick(int stick, t_philosophers *philo)
 {

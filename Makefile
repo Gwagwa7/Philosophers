@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/03/20 14:58:09 by mcassagn          #+#    #+#              #
-#    Updated: 2015/05/22 11:44:28 by mcassagn         ###   ########.fr        #
+#    Updated: 2015/06/01 11:47:07 by mschmit          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,12 @@ SOURCE		=	$(SRC)main.c		\
 				$(SRC)hungry.c		\
 				$(SRC)philo.c		\
 				$(SRC)rootines.c	\
-				$(SRC)sticks.c
+				$(SRC)sticks.c		\
+				$(SRC)drop_stick.c	\
+				$(SRC)display.c		\
+				$(SRC)init_display.c\
+				$(SRC)getndraw.c 	\
+				$(SRC)startnend.c	\
 
 OBJ		=	$(SOURCE:.c=.o)
 
@@ -33,7 +38,7 @@ LIB_COMP 	=	-L ./$(LIBDIR) -lft
 
 CC 		=	gcc
 
-FLAG 		=	-I $(INCDIR) -g -lpthread
+FLAG 		=	-I $(INCDIR) -g -Wall -Wextra -Werror 
 
 RED = \033[33;31m
 BLUE = \033[33;34m
@@ -48,7 +53,7 @@ $(LIB):
 		@$(MAKE) -C $(LIBDIR)
 
 $(NAME): $(LIB) $(OBJ)
-		@$(CC) -o $(NAME) $^ $(FLAG) $(LIB_COMP)
+		@$(CC) -o $(NAME) $^ $(FLAG) $(LIB_COMP) -lncurses
 		@rm -f $(DEP).gch
 		@echo "[$(GREEN)Compilation $(BLUE)$(NAME) $(GREEN)ok$(RESET)]"
 

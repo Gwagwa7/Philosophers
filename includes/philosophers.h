@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 10:19:43 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/06/10 11:51:51 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/06/10 12:00:35 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILOSOPHERS_H
 # define PHILOSOPHERS_H
 
-# define MAX_LIFE 5
+# define MAX_LIFE 10
 # define EAT_T 1
 # define REST_T 1
 # define THINK_T 1
@@ -23,23 +23,15 @@
 # define RIGHT(X) (X == NB_PHILO - 1) ? 0 : X + 1
 # define LEFT(X) (X == 0) ? NB_PHILO - 1 : X - 1
 # define LOSE_PER_TURN (REST_T + EAT_T)
-
-# define PHILO "Philo %d: his state: %s, his life %s; stick_left %s; stick_right %s; hungry_lvl %s\n"
-
-# define DEAD "\x1B[3%dmPhilo %d: !!starving to death!!\x1B[0m\n"
-# define RESTB "\x1B[3%dmPhilo %d: start resting. Life %d\x1B[0m\n"
-# define RESTE "\x1B[3%dmPhilo %d: stop resting. Life %d\x1B[0m\n"
-# define THINKB "\x1B[3%dmPhilo %d: start thinking. Life %d\x1B[0m\n"
-# define THINKE "\x1B[3%dmPhilo %d: stop thinking. Life %d\x1B[0m\n"
-# define EATB "\x1B[3%dmPhilo %d: start eating. Life %d\x1B[0m\n"
-# define EATE "\x1B[3%dmPhilo %d: stop eating. Life %d\x1B[0m\n"
-# define DROPL "\x1B[3%dmPhilo %d: drop left stick\x1B[0m\n"
-# define DROPR "\x1B[3%dmPhilo %d: drop right stick\x1B[0m\n"
-# define TAKEL "\x1B[3%dmPhilo %d: take left stick\x1B[0m\n"
-# define TAKER "\x1B[3%dmPhilo %d: take right stick\x1B[0m\n"
-
-# include "libft.h"
+# define PHI g_philosophers
 # include <pthread.h>
+# include <ncurses.h>
+# include <curses.h>
+# include <unistd.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include "libft.h"
 
 typedef pthread_mutex_t	t_mutex;
 
@@ -85,4 +77,17 @@ int				init_sticks(void);
 int				init_philo(void);
 int				check_sticks(int philo);
 void			set_sticks(t_philosophers *philo, int i);
+int				init_display(void);
+void			init_info(WINDOW **info);
+void			initndisplay_graph(WINDOW **graph, WINDOW **info);
+void			init_philo_win(WINDOW *philo[], WINDOW *graph);
+void			display_info(WINDOW **info);
+void			finish(WINDOW *philo[]);
+void			display_philo(WINDOW *philo[], int i);
+void			display_title(void);
+char			*get_state_info(int state);
+char			*get_state_face(int state);
+void			draw_stick(WINDOW *philo, int maxy, int index);
+void			draw_face(WINDOW *philo, int maxy, char *path);
+
 #endif
