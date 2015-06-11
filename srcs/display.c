@@ -6,13 +6,13 @@
 /*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/26 09:41:12 by mschmit           #+#    #+#             */
-/*   Updated: 2015/06/01 13:01:52 by mschmit          ###   ########.fr       */
+/*   Updated: 2015/06/11 14:28:32 by mschmit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static void		display_info_norme(WINDOW **info, int i, int offset)
+static void		display_info_norme(WINDOW **info, int i, int c, int offset)
 {
 	int		idlen;
 	char	*path;
@@ -20,7 +20,7 @@ static void		display_info_norme(WINDOW **info, int i, int offset)
 	path = get_state_info(PHI[i].state);
 	idlen = ft_strlen(ft_itoa(i + 1));
 	mvwprintw(*info, offset + i, 12, "ID [%d] COLOR [", i + 1);
-	wattrset(*info, COLOR_PAIR(i + 8));
+	wattrset(*info, COLOR_PAIR(c + 8));
 	mvwprintw(*info, offset + i, 25 + idlen, "   ");
 	wattrset(*info, COLOR_PAIR(0));
 	mvwprintw(*info, offset + i, 28 + idlen, "]");
@@ -33,22 +33,25 @@ void			display_info(WINDOW **info)
 	int		max[2];
 	int		offset;
 	int		i;
+	int		c;
 
 	i = 0;
+	c = 0;
 	offset = 3;
 	getmaxyx(*info, max[0], max[1]);
 	wclear(*info);
 	wborder(*info, 0, 0, 0, 0, 0, 0, 0, 0);
-	mvwprintw(*info, 1, (max[0] / 2) - 5, "%s", "PHILOSOPHE");
+	mvwprintw(*info, 1, 15, "%s", "PHILOSOPHE");
 	while (i < NB_PHILO)
 	{
-		display_info_norme(info, i, offset);
+		display_info_norme(info, i, c, offset);
 		wattrset(*info, COLOR_PAIR(2));
 		mvwprintw(*info, offset + i + 2, 21, "%d/%d", PHI[i].life, MAX_LIFE);
 		wattrset(*info, COLOR_PAIR(0));
 		if (i + 1 < NB_PHILO)
 			mvwprintw(*info, offset + i + 4, max[1] / 2 - 6, "************");
 		i++;
+		((c++) > 5) ? c = 0 : c;
 		offset += 5;
 	}
 	wrefresh(*info);
