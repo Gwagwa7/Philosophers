@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rootines.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mcassagn <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mschmit <mschmit@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/05/22 11:04:12 by mcassagn          #+#    #+#             */
-/*   Updated: 2015/05/26 10:36:04 by mcassagn         ###   ########.fr       */
+/*   Updated: 2015/06/10 11:56:38 by mcassagn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,58 +14,27 @@
 #include <unistd.h>
 #include <philosophers.h>
 
-void	*main_rootine(void *param)
+void			*main_rootine(void *param)
 {
-	int	i;
-	char *state;
-	char *stickL;
-	char *stickR;
-	char *hungry;
-	char *life;
 	time_t	t1;
 	time_t	t2;
+	WINDOW	*info;
+	WINDOW	*graph;
+	WINDOW	*philo[NB_PHILO + 2];
 
 	(void)param;
-	i = 0;
 	time(&t1);
 	time(&t2);
+	init_display();
 	while (no_philo_dead() && (t2 - t1 <= TIMEOUT))
 	{
-		while(i < NB_PHILO)
-		{
-			if(g_philosophers[i].state == 0)
-				state = "\x1B[33mThinking\x1B[0m";
-			else if (g_philosophers[i].state == 1)
-				state = "\x1B[35mResting\x1B[0m";
-			else if (g_philosophers[i].state == 2)
-				state = "\x1B[36mEating\x1B[0m";
-			if (g_philosophers[i].stick_left == 1)
-				stickL = "\x1B[32m1\x1B[0m";
-			else
-				stickL = "\x1B[33m0\x1B[0m";
-			if (g_philosophers[i].stick_right == 1)
-				stickR = "\x1B[32m1\x1B[0m";
-			else
-				stickR = "\x1B[33m0\x1B[0m";
-			if (g_philosophers[i].hungry_lvl == CRITICAL)
-				hungry = "critical";
-			if (g_philosophers[i].hungry_lvl == LOW)
-				hungry = "low";
-			if (g_philosophers[i].hungry_lvl == MEDIUM)
-				hungry = "medium";
-			if (g_philosophers[i].hungry_lvl == HIGH)
-				hungry = "high";
-			life = ft_strjoin("\x1B[32m", ft_itoa(g_philosophers[i].life));
-			life = 	ft_strjoin(life, "\x1B[0m");
-			printf(PHILO, i, state, life, stickL, stickR, hungry);
-			i++;
-		}
-		printf("Time left = %ld\n", TIMEOUT - (t2 - t1));
-		printf("******************\n");
-		i = 0;
-		usleep(750000);
+		initndisplay_graph(&graph, &info);
+		init_philo_win(philo, graph);
+		display_info(&info);
+		display_philo(philo, 0);
 		time(&t2);
 	}
+	finish(philo);
 	if (no_philo_dead())
 		ft_putendl(WIN_MESSAGE);
 	else
@@ -73,7 +42,7 @@ void	*main_rootine(void *param)
 	return (NULL);
 }
 
-static void    philo_main_rootine(t_philosophers *philo)
+static void		philo_main_rootine(t_philosophers *philo)
 {
 	if (philo->state == EAT)
 		rest(philo);
@@ -89,10 +58,10 @@ static void    philo_main_rootine(t_philosophers *philo)
 		think(philo);
 	}
 	update_hungry(philo);
-	usleep(100000);
+	usleep(100);
 }
 
-void	*philo_rootine(void *param)
+void			*philo_rootine(void *param)
 {
 	int				j;
 	t_philosophers	*philo;
